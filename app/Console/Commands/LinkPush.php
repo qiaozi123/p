@@ -10,14 +10,14 @@ use Illuminate\Console\Command;
 use Spatie\Browsershot\Browsershot;
 use Symfony\Component\DomCrawler\Crawler;
 
-class Push extends Command
+class LinkPush extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'push:start';
+    protected $signature = 'links:start';
     private $totalPageCount;
     private $counter        = 1;
     private $concurrency    = 100;  // 同时并发抓取
@@ -65,7 +65,7 @@ class Push extends Command
             $headers[] = 'X-MicrosoftAjax: Delta=true';
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             curl_setopt($ch,CURLOPT_URL,$url);
-        // 3. 执行并获取HTML文档内容
+            // 3. 执行并获取HTML文档内容
             $output = curl_exec($ch);
             $info = curl_getinfo($ch);
             $i++;
@@ -73,7 +73,7 @@ class Push extends Command
             if($output === FALSE ){
                 echo "CURL Error:".curl_error($ch);
             }
-        // 4. 释放curl句柄
+            // 4. 释放curl句柄
             curl_close($ch);
         }
     }
@@ -86,7 +86,7 @@ class Push extends Command
 
     public function referer()
     {
-        $file = file(public_path('seo.txt'));
+        $file = file(public_path('link.txt'));
         return str_replace(array("\r\n", "\r", "\n"), "",array_random($file));
     }
 
