@@ -73,6 +73,9 @@ class LinkPush extends Command
             if($output === FALSE ){
                 echo "CURL Error:".curl_error($ch);
             }
+            $sleeptime = rand(1,50);
+            sleep($sleeptime);
+            echo '休息'.$sleeptime.'秒'.PHP_EOL;
             // 4. 释放curl句柄
             curl_close($ch);
         }

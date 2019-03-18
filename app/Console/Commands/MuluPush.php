@@ -68,9 +68,7 @@ class MuluPush extends Command
             $info = curl_getinfo($ch);
             $i++;
             echo '第'.$i.'条,推送 '.$info['url'].'耗时'.$info['total_time'].'秒'.PHP_EOL;
-            $sleeptime = rand(1,50);
-            sleep($sleeptime);
-            echo '休息'.$sleeptime.'秒'.PHP_EOL;
+
             if($output === FALSE ){
                 echo "CURL Error:".curl_error($ch);
             }
