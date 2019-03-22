@@ -53,6 +53,7 @@ class Spider extends Command
             $headers[] = 'X-Apple-Store-Front: 143444,12';
             $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
             $headers[] = 'Accept-Encoding: gzip, deflate';
+            $headers[] = 'Accept-Language: en-US,en;q=0.5';
             $headers[] = 'Content-Type: application/x-www-form-urlencoded; charset=utf-8';
             $headers[] = 'User-Agent: Mozilla/5.0 (compatible; Baiduspider/2.0;+http://www.baidu.com/search/spider.html）';
             $headers[] = 'Connection: keep-alive';
