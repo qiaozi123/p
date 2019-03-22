@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Keyword;
+use App\RankUpdate;
+use GuzzleHttp\Client;
+use GuzzleHttp\Pool;
+use Illuminate\Console\Command;
+use Spatie\Browsershot\Browsershot;
+use Symfony\Component\DomCrawler\Crawler;
+
+class Spider extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'spider:start';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = '';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $i=1;
+        while (true){
+            $ch = curl_init();
+            $referer = self::referer();
+            $url =  $referer;
+            $headers = array();
+            $headers[] = 'X-Apple-Tz: 0';
+            $headers[] = 'X-Apple-Store-Front: 143444,12';
+            $headers[] = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
+            $headers[] = 'Accept-Encoding: gzip, deflate';
+            $headers[] = 'Content-Type: application/x-www-form-urlencoded; charset=utf-8';
+            $headers[] = 'User-Agent: Mozilla/5.0 (compatible; Baiduspider/2.0;+http://www.baidu.com/search/spider.html）';
+            $headers[] = 'Connection: keep-alive';
+            $headers[] = 'Referer: '.$referer;
+            $headers[] = 'X-MicrosoftAjax: Delta=true';
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch,CURLOPT_URL,$url);
+        // 3. 执行并获取HTML文档内容
+            $output = curl_exec($ch);
+            $info = curl_getinfo($ch);
+            $i++;
+            echo '第'.$i.'条蜘蛛,推送 '.$info['url'].'耗时'.$info['total_time'].'秒'.PHP_EOL;
+            $time = self::randFloat(1,2);
+            sleep($time);
+            echo '休息'.$time.'秒'.PHP_EOL;
+            if($output === FALSE ){
+                echo "CURL Error:".curl_error($ch);
+            }
+        // 4. 释放curl句柄
+            curl_close($ch);
+        }
+    }
+
+    public function useragent()
+    {
+        $ua = file(public_path('ua.txt'));
+        return str_replace(array("\r\n", "\r", "\n"), "", array_random($ua));
+    }
+
+    public function referer()
+    {
+        $host = env('PUSH_HOST');
+        $file = [$host.str_random(5).'/'.str_random(5).'.html',$host.str_random(3).'/'.str_random(5).'/',$host.str_random(6).'.html'];
+        return array_random($file) ;
+    }
+
+    function randFloat($min=0, $max=1){
+        return $min + mt_rand()/mt_getrandmax() * ($max-$min);
+    }
+
+}
+
